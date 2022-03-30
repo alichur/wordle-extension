@@ -1,12 +1,12 @@
 // Initialize butotn with users's prefered color
-let changeColor = document.getElementById("changeColor");
+let copyToClipboard = document.getElementById("copyToClipboard");
 
 chrome.storage.sync.get("color", ({ color }) => {
-  changeColor.style.backgroundColor = color;
+  copyToClipboard.style.backgroundColor = color;
 });
 
 // When the button is clicked, inject setPageBackgroundColor into current page
-changeColor.addEventListener("click", async () => {
+copyToClipboard.addEventListener("click", async () => {
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
   chrome.scripting.executeScript({

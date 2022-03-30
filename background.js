@@ -1,4 +1,4 @@
-// let clipboardText = 'RESULTS: my wordle results are';
+let clipboardText = 'RESULTS: my wordle results are';
 
 // chrome.runtime.onInstalled.addListener(() => {
 //     chrome.storage.sync.set({ clipboardText });
