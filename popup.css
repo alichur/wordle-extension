@@ -1,0 +1,47 @@
+body {
+  font-family   : 'Helvetica', 'Arial', sans-serif;
+  --primary     : #538d4e;
+  --primary-text: #FFFFFF;
+
+}
+
+.container {
+  min-width     : 300px;
+  min-height    : 100px;
+  display       : flex;
+  flex-direction: column;
+  padding       : 20px;
+
+}
+
+h2 {
+  text-transform: uppercase;
+}
+
+button {
+  min-height      : 50px;
+  min-width       : 100px;
+  font-weight     : bold;
+  border          : none;
+  border-radius   : 4px;
+  cursor          : pointer;
+  background-color: var(--primary);
+  color           : var(--primary-text);
+}
+
+button:before {
+  content     : url("images/copy-solid.svg");
+  display     : inline-block;
+  margin-right: 10px;
+  width       : 13px;
+
+}
+
+button:hover {
+  opacity: 0.85;
+}
+
+button.current {
+  box-shadow: 0 0 0 2px white,
+    0 0 0 4px black;
+}
