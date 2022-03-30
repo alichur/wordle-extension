@@ -18,6 +18,10 @@ copyToClipboard.addEventListener("click", async () => {
 // The body of this function will be execuetd as a content script inside the
 // current page
 function setPageBackgroundColor() {
+  alert('test')
+  chrome.storage.sync.get("clipboardText", ({ clipboardText }) => {
+    alert(`clipboard text is ${clipboardText}`);
+  });
   chrome.storage.sync.get("color", ({ color }) => {
     document.body.style.backgroundColor = color;
   });
