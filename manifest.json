@@ -3,7 +3,9 @@
   "description": "Collates results from Wordle like games",
   "version": "1.0",
   "manifest_version": 3,
-  "background": {},
+  "background": {
+    "service_worker": "background.js"
+  },
   "permissions": [
     "storage",
     "activeTab",
