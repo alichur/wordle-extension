@@ -12,6 +12,10 @@
     "scripting",
     "tabs"
   ],
+  "host_permissions": [
+    "https://www.nytimes.com/games/wordle/index.html",
+    "https://www.quordle.com/#/"
+  ],
   "action": {
     "default_popup": "popup.html",
     "default_title": "Generate daily Shardle results",
