@@ -3,11 +3,20 @@
   "description": "Collates results from Wordle like games",
   "version": "1.0",
   "manifest_version": 3,
-  "background": {},
+  "background": {
+    "service_worker": "background.js"
+  },
   "permissions": [
     "storage",
     "activeTab",
-    "scripting"
+    "scripting",
+    "tabs",
+    "clipboardRead",
+    "clipboardWrite"
+  ],
+  "host_permissions": [
+    "https://www.nytimes.com/games/wordle/index.html",
+    "https://www.quordle.com/#/"
   ],
   "action": {
     "default_popup": "popup.html",
