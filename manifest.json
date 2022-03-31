@@ -10,7 +10,9 @@
     "storage",
     "activeTab",
     "scripting",
-    "tabs"
+    "tabs",
+    "clipboardRead",
+    "clipboardWrite"
   ],
   "host_permissions": [
     "https://www.nytimes.com/games/wordle/index.html",
