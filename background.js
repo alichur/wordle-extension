@@ -1,7 +1,12 @@
-let clipboardText = 'RESULTS: my wordle results are';
+let initialResults = 'game results:';
 
 chrome.runtime.onInstalled.addListener(() => {
-    chrome.storage.sync.set({ clipboardText });
-    console.log(`Clipboard text will be set to: ${clipboardText}`);
+    let results = `${initialResults} 1234`
+    chrome.storage.sync.set({ results: results }, function () {
+        console.log(`Storage API results are being set to: ${results}`);
+    });
+    chrome.storage.sync.get('results', function (value) {
+        console.log(`Storage API results are: ${value['results']}`);
+    });
 });
 
