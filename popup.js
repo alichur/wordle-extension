@@ -6,8 +6,9 @@ copyButton.addEventListener("click", async () => {
   // let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   // let wordle = await chrome.tabs.create({ active: false, url: "https://www.nytimes.com/games/wordle/index.html" });
   let quordle = await chrome.tabs.create({ active: false, url: "https://www.quordle.com/#/" });
-  //todo fix removing
+  //todo wait for page to load - this alert happens to fix this! Replace with await.
   alert("test")
+
 
   chrome.scripting.executeScript({
     target: { tabId: quordle.id },
