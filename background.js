@@ -20,7 +20,7 @@ chrome.runtime.onInstalled.addListener(() => {
     chrome.storage.sync.set({ results: results }, function () {
         console.log(`Storage API results are being set to: ${results}`);
     });
-    let formatted = 'hi'
+    let formatted = 'Something went wrong, no results able to be copied'
     chrome.storage.sync.set({ formatted: formatted }, function () {
         console.log(`added formatted var`);
     });
