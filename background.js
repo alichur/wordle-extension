@@ -33,7 +33,7 @@ chrome.storage.onChanged.addListener(function (changes) {
         console.log(`quordle formmated is now ${quordle}`);
         //beware circlular.
         chrome.storage.sync.set({ formatted: quordle }, function () {
-            console.log('set formatted var')
+            console.log(`set formatted var to ${quordle}`)
         });
     }
 
