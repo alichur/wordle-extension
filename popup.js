@@ -36,6 +36,17 @@ async function appendToResults() {
   chrome.storage.sync.set({ results: text }, function () {
     textArea.remove()
   });
+
+  // get formatted results from storage and append to element and add to clipboard
+  // todo - retrieve from storage.
+  results = "my new results";
+  let resultsTextArera = document.createElement("textarea");
+  resultsTextArera.setAttribute("id", "results");
+  document.body.appendChild(resultsTextArera);
+  resultsTextArera.value = results
+  resultsTextArera.focus();
+  resultsTextArera.select();
+  document.execCommand('copy');
 }
 // only background can access clipboard.
 // only content scrpt can access tabs.
