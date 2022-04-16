@@ -14,8 +14,6 @@ copyButton.addEventListener("click", async () => {
     target: { tabId: quordle.id },
     function: appendToResults,
   });
-  chrome.storage.sync.set({ results: "my before test" }, function () {
-  });
 });
 
 // The body of this function will be execuetd as a content script inside the
@@ -29,13 +27,7 @@ async function appendToResults() {
   // create text area and paste from clipboard
   let textArea = document.createElement("textarea");
   textArea.setAttribute("id", "pasteArea");
-  textArea.value = "my text area starting value";
   document.body.appendChild(textArea);
-  chrome.storage.sync.set({ results: "created text area" }, function () {
-  });
-  text = document.getElementById("pasteArea").value;
-  chrome.storage.sync.set({ results: text }, function () {
-  });
   textArea.focus();
   document.execCommand('paste');
 
