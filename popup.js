@@ -5,6 +5,8 @@ let copyButton = document.getElementById("copyButton");
 copyButton.addEventListener("click", async () => {
   // let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   // let wordle = await chrome.tabs.create({ active: false, url: "https://www.nytimes.com/games/wordle/index.html" });
+  // document.querySelector("game-app").shadowRoot.querySelector("game-stats").shadowRoot.querySelector("#share-button");
+
   let quordle = await chrome.tabs.create({ active: false, url: "https://www.quordle.com/#/" });
   //todo wait for page to load - this alert happens to fix this! Replace with await.
   alert("test")
