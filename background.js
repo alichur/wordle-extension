@@ -1,7 +1,7 @@
-let initialResults = 'game results:';
+let initialResults = 'game results';
 
 chrome.runtime.onInstalled.addListener(() => {
-    let results = `${initialResults} 1234`
+    let results = `${initialResults} are`
     chrome.storage.sync.set({ results: results }, function () {
         console.log(`Storage API results are being set to: ${results}`);
     });
@@ -10,3 +10,9 @@ chrome.runtime.onInstalled.addListener(() => {
     });
 });
 
+chrome.storage.onChanged.addListener(function (changes) {
+    if ("results" in changes) {
+        console.log("Old value: " + changes.results.oldValue);
+        console.log("New value: " + changes.results.newValue);
+    }
+});
