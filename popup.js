@@ -34,6 +34,7 @@ async function appendToResults() {
   // Read value from text area and add to storage
   text = document.getElementById("pasteArea").value;
   chrome.storage.sync.set({ results: text }, function () {
+    textArea.remove()
   });
 }
 // only background can access clipboard.
