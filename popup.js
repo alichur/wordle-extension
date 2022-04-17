@@ -1,39 +1,34 @@
 let copyButton = document.getElementById("copyButton");
-let wordle = "https://www.nytimes.com/games/wordle/index.html";
 
 
 copyButton.addEventListener("click", async () => {
+  let wordle = "https://www.nytimes.com/games/wordle/index.html";
   let quordle = await chrome.tabs.create({ active: false, url: "https://www.quordle.com/#/" });
   let durdle = await chrome.tabs.create({ active: false, url: "https://zaratustra.itch.io/dordle" });
   let octordle = await chrome.tabs.create({ active: false, url: "https://octordle.com/?mode=daily" });
   //todo wait for page to load - this alert happens to fix this! Replace with await.
   alert("test")
-
   chrome.scripting.executeScript({
     target: { tabId: quordle.id },
     function: handleQurdle,
   });
-  alert('waiting');
+  alert("test")
+
   chrome.scripting.executeScript({
     target: { tabId: durdle.id },
     function: handleDurdle,
   });
-  alert('waiting');
+  alert("test")
 
   chrome.scripting.executeScript({
     target: { tabId: octordle.id },
     function: handleOctordle,
   });
 
-  //get values and add to clipboard via element.
   alert("wait until posting to clipboard")
 
   chrome.storage.sync.get(['quordle', 'octordle'], function (resultArray) {
-    let octordle = resultArray['octordle'];
-    alert(octordle);
-    let quordle = resultArray['quordle'];
-    alert(quordle);
-    let summary = octordle + quordle;
+    let summary = resultArray['octordle'] + resultArray['quordle'];
     let resultsTextArera = document.createElement("textarea");
     resultsTextArera.setAttribute("id", "results");
     document.body.appendChild(resultsTextArera);
@@ -41,6 +36,8 @@ copyButton.addEventListener("click", async () => {
     resultsTextArera.focus();
     resultsTextArera.select();
     document.execCommand('copy');
+
+    chrome.tabs.remove([octordle.id, quordle.id, durdle.id]);
   });
 });
 
