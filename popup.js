@@ -58,9 +58,7 @@ async function handleQurdle() {
 
 async function handleDurdle() {
   //copy durdle results to clipboard
-  let quordleInnerButtonDiv = [...document.querySelectorAll('div')].filter(el => el.innerHTML === 'Copy to Clipboard');
-  let quordleCopyButton = quordleInnerButtonDiv[0].closest("button");
-  quordleCopyButton.click();
+  document.getElementById("share").click()
 
   // paste from clipboard and copy into storage
   let textArea = document.createElement("textarea");
