@@ -51,7 +51,7 @@ async function handleQurdle() {
   textArea.focus();
   document.execCommand('paste');
   text = document.getElementById("pasteArea").value;
-  chrome.storage.sync.set({ results: text }, function () {
+  chrome.storage.sync.set({ quordle: text }, function () {
     textArea.remove()
   });
 }

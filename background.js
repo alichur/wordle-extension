@@ -17,8 +17,8 @@ function getFormattedQuordle(fullQuordleString) {
 chrome.runtime.onInstalled.addListener(() => {
 
     let results = `${initialResults} are`
-    chrome.storage.sync.set({ results: results }, function () {
-        console.log(`Storage API results are being set to: ${results}`);
+    chrome.storage.sync.set({ quordle: results }, function () {
+        console.log(`quordle starting value: ${results}`);
     });
     let formatted = 'Something went wrong, no results able to be copied'
     chrome.storage.sync.set({ formatted: formatted }, function () {
@@ -28,8 +28,8 @@ chrome.runtime.onInstalled.addListener(() => {
 });
 
 chrome.storage.onChanged.addListener(function (changes) {
-    if ("results" in changes) {
-        let quordle = getFormattedQuordle(changes.results.newValue);
+    if ("quordle" in changes) {
+        let quordle = getFormattedQuordle(changes.quordle.newValue);
         console.log(`quordle formmated is now ${quordle}`);
         //beware circlular.
         chrome.storage.sync.set({ formatted: quordle }, function () {
