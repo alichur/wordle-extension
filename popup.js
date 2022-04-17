@@ -8,7 +8,7 @@ copyButton.addEventListener("click", async () => {
   // document.querySelector("game-app").shadowRoot.querySelector("game-stats").shadowRoot.querySelector("#share-button");
 
   let quordle = await chrome.tabs.create({ active: false, url: "https://www.quordle.com/#/" });
-  // let durdle = await chrome.tabs.create({ active: false, url: "https://zaratustra.itch.io/dordle" });
+  let durdle = await chrome.tabs.create({ active: false, url: "https://zaratustra.itch.io/dordle" });
   //todo wait for page to load - this alert happens to fix this! Replace with await.
   alert("test")
 
@@ -17,11 +17,11 @@ copyButton.addEventListener("click", async () => {
     target: { tabId: quordle.id },
     function: handleQurdle,
   });
-
-  // chrome.scripting.executeScript({
-  //   target: { tabId: durdle.id },
-  //   function: handleDurdle,
-  // });
+  alert('waiting');
+  chrome.scripting.executeScript({
+    target: { tabId: durdle.id },
+    function: handleDurdle,
+  });
 
   //get values and add to clipboard via element.
   alert("wait until posting to clipboard")
@@ -58,16 +58,16 @@ async function handleQurdle() {
 
 async function handleDurdle() {
   //copy durdle results to clipboard
-  document.getElementById("share").click()
+  // document.getElementById("share").click()
 
   // paste from clipboard and copy into storage
-  let textArea = document.createElement("textarea");
-  textArea.setAttribute("id", "pasteArea2");
-  document.body.appendChild(textArea);
-  textArea.focus();
-  document.execCommand('paste');
-  text = document.getElementById("pasteArea2").value;
-  chrome.storage.sync.set({ durdle: text }, function () {
-    textArea.remove()
+  // let textArea = document.createElement("textarea");
+  // textArea.setAttribute("id", "pasteArea2");
+  // document.body.appendChild(textArea);
+  // textArea.focus();
+  // document.execCommand('paste');
+  // text = document.getElementById("pasteArea2").value;
+  chrome.storage.sync.set({ durdle: "durdle results here" }, function () {
+    // textArea.remove()
   });
 }
