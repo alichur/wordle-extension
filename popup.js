@@ -1,18 +1,13 @@
 let copyButton = document.getElementById("copyButton");
+let wordle = "https://www.nytimes.com/games/wordle/index.html";
 
 
-// When the button is clicked, inject handleQurdle into current page
 copyButton.addEventListener("click", async () => {
-  // let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  // let wordle = await chrome.tabs.create({ active: false, url: "https://www.nytimes.com/games/wordle/index.html" });
-  // document.querySelector("game-app").shadowRoot.querySelector("game-stats").shadowRoot.querySelector("#share-button");
-  //octordle document.getElementById("share_clipboard").click()
   let quordle = await chrome.tabs.create({ active: false, url: "https://www.quordle.com/#/" });
   let durdle = await chrome.tabs.create({ active: false, url: "https://zaratustra.itch.io/dordle" });
   let octordle = await chrome.tabs.create({ active: false, url: "https://octordle.com/?mode=daily" });
   //todo wait for page to load - this alert happens to fix this! Replace with await.
   alert("test")
-
 
   chrome.scripting.executeScript({
     target: { tabId: quordle.id },
@@ -33,12 +28,16 @@ copyButton.addEventListener("click", async () => {
   //get values and add to clipboard via element.
   alert("wait until posting to clipboard")
 
-  chrome.storage.sync.get('formatted', function (value) {
-    let results = `${value['formatted']}`;
+  chrome.storage.sync.get(['quordle', 'octordle'], function (resultArray) {
+    let octordle = resultArray['octordle'];
+    alert(octordle);
+    let quordle = resultArray['quordle'];
+    alert(quordle);
+    let summary = octordle + quordle;
     let resultsTextArera = document.createElement("textarea");
     resultsTextArera.setAttribute("id", "results");
     document.body.appendChild(resultsTextArera);
-    resultsTextArera.value = results
+    resultsTextArera.value = summary;
     resultsTextArera.focus();
     resultsTextArera.select();
     document.execCommand('copy');
@@ -46,6 +45,12 @@ copyButton.addEventListener("click", async () => {
 });
 
 async function handleQurdle() {
+  let qurodle = "https://www.quordle.com/#/";
+
+  function getFormattedQuordle(fullQuordleString) {
+    return fullQuordleString.includes('quordle.com') ? fullQuordleString.split('quordle.com')[0] : qurodle;
+  };
+
   //copy quordle results to clipboard
   let quordleInnerButtonDiv = [...document.querySelectorAll('div')].filter(el => el.innerHTML === 'Copy to Clipboard');
   let quordleCopyButton = quordleInnerButtonDiv[0].closest("button");
@@ -58,12 +63,18 @@ async function handleQurdle() {
   textArea.focus();
   document.execCommand('paste');
   text = document.getElementById("pasteArea").value;
+  text = getFormattedQuordle(text);
   chrome.storage.sync.set({ quordle: text }, function () {
     textArea.remove()
   });
 }
 
 async function handleDurdle() {
+  let durdle = "https://zaratustra.itch.io/dordle";
+  function getFormattedDurdle(fullDurdleString) {
+    return fullDurdleString.includes('7') ? fullDurdleString.split('7')[0] : durdle;
+  };
+
   // document.getElementById("game_drop").contentWindow.document
   //copy durdle results to clipboard
   let button = document.getElementById("share");
@@ -77,12 +88,18 @@ async function handleDurdle() {
   textArea.focus();
   document.execCommand('paste');
   text = document.getElementById("pasteArea2").value;
+  text = getFormattedDurdle(text);
   chrome.storage.sync.set({ durdle: text }, function () {
     textArea.remove()
   });
 }
 
 async function handleOctordle() {
+  let octordle = "https://octordle.com/?mode=daily";
+  function getFormattedOctordle(fullOctordleString) {
+    return fullOctordleString.includes('octordle.com') ? fullOctordleString.split('octordle.com')[0] : octordle;
+  };
+
   document.getElementById("share_clipboard").click();
 
   // paste from clipboard and copy into storage
@@ -92,6 +109,7 @@ async function handleOctordle() {
   textArea.focus();
   document.execCommand('paste');
   text = document.getElementById("pasteArea3").value;
+  text = getFormattedOctordle(text);
   chrome.storage.sync.set({ octordle: text }, function () {
     textArea.remove()
   });
