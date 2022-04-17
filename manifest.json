@@ -16,7 +16,8 @@
   ],
   "host_permissions": [
     "https://www.nytimes.com/games/wordle/index.html",
-    "https://www.quordle.com/#/"
+    "https://www.quordle.com/#/",
+    "https://zaratustra.itch.io/dordle"
   ],
   "action": {
     "default_popup": "popup.html",
