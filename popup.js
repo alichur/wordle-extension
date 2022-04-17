@@ -1,7 +1,7 @@
 let copyButton = document.getElementById("copyButton");
 
 
-// When the button is clicked, inject appendToResults into current page
+// When the button is clicked, inject handleQurdle into current page
 copyButton.addEventListener("click", async () => {
   // let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   // let wordle = await chrome.tabs.create({ active: false, url: "https://www.nytimes.com/games/wordle/index.html" });
@@ -14,13 +14,11 @@ copyButton.addEventListener("click", async () => {
 
   chrome.scripting.executeScript({
     target: { tabId: quordle.id },
-    function: appendToResults,
+    function: handleQurdle,
   });
 });
 
-// The body of this function will be execuetd as a content script inside the
-// current page
-async function appendToResults() {
+async function handleQurdle() {
   //copy quordle results to clipboard
   let quordleInnerButtonDiv = [...document.querySelectorAll('div')].filter(el => el.innerHTML === 'Copy to Clipboard');
   let quordleCopyButton = quordleInnerButtonDiv[0].closest("button");
