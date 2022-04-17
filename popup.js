@@ -6,9 +6,10 @@ copyButton.addEventListener("click", async () => {
   // let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   // let wordle = await chrome.tabs.create({ active: false, url: "https://www.nytimes.com/games/wordle/index.html" });
   // document.querySelector("game-app").shadowRoot.querySelector("game-stats").shadowRoot.querySelector("#share-button");
-
+  //octordle document.getElementById("share_clipboard").click()
   let quordle = await chrome.tabs.create({ active: false, url: "https://www.quordle.com/#/" });
   let durdle = await chrome.tabs.create({ active: false, url: "https://zaratustra.itch.io/dordle" });
+  let octordle = await chrome.tabs.create({ active: false, url: "https://octordle.com/?mode=daily" });
   //todo wait for page to load - this alert happens to fix this! Replace with await.
   alert("test")
 
@@ -21,6 +22,12 @@ copyButton.addEventListener("click", async () => {
   chrome.scripting.executeScript({
     target: { tabId: durdle.id },
     function: handleDurdle,
+  });
+  alert('waiting');
+
+  chrome.scripting.executeScript({
+    target: { tabId: octordle.id },
+    function: handleOctordle,
   });
 
   //get values and add to clipboard via element.
@@ -57,17 +64,35 @@ async function handleQurdle() {
 }
 
 async function handleDurdle() {
+  // document.getElementById("game_drop").contentWindow.document
   //copy durdle results to clipboard
-  // document.getElementById("share").click()
+  let button = document.getElementById("share");
+  // document.getElementById("game_drop")
+  button.click();
 
   // paste from clipboard and copy into storage
-  // let textArea = document.createElement("textarea");
-  // textArea.setAttribute("id", "pasteArea2");
-  // document.body.appendChild(textArea);
-  // textArea.focus();
-  // document.execCommand('paste');
-  // text = document.getElementById("pasteArea2").value;
-  chrome.storage.sync.set({ durdle: "durdle results here" }, function () {
-    // textArea.remove()
+  let textArea = document.createElement("textarea");
+  textArea.setAttribute("id", "pasteArea2");
+  document.body.appendChild(textArea);
+  textArea.focus();
+  document.execCommand('paste');
+  text = document.getElementById("pasteArea2").value;
+  chrome.storage.sync.set({ durdle: text }, function () {
+    textArea.remove()
+  });
+}
+
+async function handleOctordle() {
+  document.getElementById("share_clipboard").click();
+
+  // paste from clipboard and copy into storage
+  let textArea = document.createElement("textarea");
+  textArea.setAttribute("id", "pasteArea3");
+  document.body.appendChild(textArea);
+  textArea.focus();
+  document.execCommand('paste');
+  text = document.getElementById("pasteArea3").value;
+  chrome.storage.sync.set({ octordle: text }, function () {
+    textArea.remove()
   });
 }
