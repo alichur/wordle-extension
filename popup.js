@@ -8,6 +8,7 @@ copyButton.addEventListener("click", async () => {
   // document.querySelector("game-app").shadowRoot.querySelector("game-stats").shadowRoot.querySelector("#share-button");
 
   let quordle = await chrome.tabs.create({ active: false, url: "https://www.quordle.com/#/" });
+  // let durdle = await chrome.tabs.create({ active: false, url: "https://zaratustra.itch.io/dordle" });
   //todo wait for page to load - this alert happens to fix this! Replace with await.
   alert("test")
 
@@ -15,6 +16,25 @@ copyButton.addEventListener("click", async () => {
   chrome.scripting.executeScript({
     target: { tabId: quordle.id },
     function: handleQurdle,
+  });
+
+  // chrome.scripting.executeScript({
+  //   target: { tabId: durdle.id },
+  //   function: handleDurdle,
+  // });
+
+  //get values and add to clipboard via element.
+  alert("wait until posting to clipboard")
+
+  chrome.storage.sync.get('formatted', function (value) {
+    let results = `${value['formatted']}`;
+    let resultsTextArera = document.createElement("textarea");
+    resultsTextArera.setAttribute("id", "results");
+    document.body.appendChild(resultsTextArera);
+    resultsTextArera.value = results
+    resultsTextArera.focus();
+    resultsTextArera.select();
+    document.execCommand('copy');
   });
 });
 
@@ -24,33 +44,32 @@ async function handleQurdle() {
   let quordleCopyButton = quordleInnerButtonDiv[0].closest("button");
   quordleCopyButton.click();
 
-  // create text area and paste from clipboard
+  // paste from clipboard and copy into storage
   let textArea = document.createElement("textarea");
   textArea.setAttribute("id", "pasteArea");
   document.body.appendChild(textArea);
   textArea.focus();
   document.execCommand('paste');
-
-  // Read value from text area and add to storage
   text = document.getElementById("pasteArea").value;
   chrome.storage.sync.set({ results: text }, function () {
     textArea.remove()
-
-    // get formatted results from storage and append to element and add to clipboard
-    // todo - retrieve from storage.
-    chrome.storage.sync.get('formatted', function (value) {
-      let results = `${value['formatted']}`;
-      let resultsTextArera = document.createElement("textarea");
-      resultsTextArera.setAttribute("id", "results");
-      document.body.appendChild(resultsTextArera);
-      resultsTextArera.value = results
-      resultsTextArera.focus();
-      resultsTextArera.select();
-      document.execCommand('copy');
-    });
   });
-
-
 }
-// only background can access clipboard.
-// only content scrpt can access tabs.
+
+async function handleDurdle() {
+  //copy durdle results to clipboard
+  let quordleInnerButtonDiv = [...document.querySelectorAll('div')].filter(el => el.innerHTML === 'Copy to Clipboard');
+  let quordleCopyButton = quordleInnerButtonDiv[0].closest("button");
+  quordleCopyButton.click();
+
+  // paste from clipboard and copy into storage
+  let textArea = document.createElement("textarea");
+  textArea.setAttribute("id", "pasteArea2");
+  document.body.appendChild(textArea);
+  textArea.focus();
+  document.execCommand('paste');
+  text = document.getElementById("pasteArea2").value;
+  chrome.storage.sync.set({ durdle: text }, function () {
+    textArea.remove()
+  });
+}
