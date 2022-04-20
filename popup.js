@@ -1,4 +1,9 @@
+// For each game, open a new tab and click the share button.
+// Paste from the clipboard into a temporary element, then save the value from this element into chrome storage.
+// Finally, results from storage are formatted into a single string, added to another temporary element, then copied into the user's clipboard.
+
 let copyButton = document.getElementById("copyButton");
+
 
 
 copyButton.addEventListener("click", async () => {
@@ -6,26 +11,26 @@ copyButton.addEventListener("click", async () => {
   let quordle = await chrome.tabs.create({ active: false, url: "https://www.quordle.com/#/" });
   let durdle = await chrome.tabs.create({ active: false, url: "https://zaratustra.itch.io/dordle" });
   let octordle = await chrome.tabs.create({ active: false, url: "https://octordle.com/?mode=daily" });
-  //todo wait for page to load - this alert happens to fix this! Replace with await.
-  alert("test")
+
+  // wait for page to load. Can't look for share button we can't tell between dialog not loading due to time, or due to puzzle being incomplete.
+  await new Promise(resolve => setTimeout(resolve, 1000));
+
   chrome.scripting.executeScript({
     target: { tabId: quordle.id },
     function: handleQurdle,
   });
-  alert("test")
 
   chrome.scripting.executeScript({
     target: { tabId: durdle.id },
     function: handleDurdle,
   });
-  alert("test")
 
   chrome.scripting.executeScript({
     target: { tabId: octordle.id },
     function: handleOctordle,
   });
 
-  alert("wait until posting to clipboard")
+  await new Promise(resolve => setTimeout(resolve, 1000));
 
   chrome.storage.sync.get(['quordle', 'octordle'], function (resultArray) {
     let summary = resultArray['octordle'] + resultArray['quordle'];
@@ -38,6 +43,7 @@ copyButton.addEventListener("click", async () => {
     document.execCommand('copy');
 
     chrome.tabs.remove([octordle.id, quordle.id, durdle.id]);
+    window.close();
   });
 });
 
@@ -60,8 +66,8 @@ async function handleQurdle() {
   textArea.focus();
   document.execCommand('paste');
   text = document.getElementById("pasteArea").value;
-  text = getFormattedQuordle(text);
-  chrome.storage.sync.set({ quordle: text }, function () {
+  let updatedText = getFormattedQuordle(text);
+  chrome.storage.sync.set({ quordle: updatedText }, function () {
     textArea.remove()
   });
 }
