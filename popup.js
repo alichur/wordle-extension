@@ -20,11 +20,10 @@ copyButton.addEventListener("click", async () => {
     function: handleQurdle,
   });
 
-  chrome.scripting.executeScript({
-    target: { tabId: durdle.id },
-    function: handleDurdle,
-  });
-
+  // chrome.scripting.executeScript({
+  //   target: { tabId: durdle.id },
+  //   function: handleDurdle,
+  // });
   chrome.scripting.executeScript({
     target: { tabId: octordle.id },
     function: handleOctordle,
@@ -33,11 +32,11 @@ copyButton.addEventListener("click", async () => {
   await new Promise(resolve => setTimeout(resolve, 1000));
 
   chrome.storage.sync.get(['quordle', 'octordle'], function (resultArray) {
-    let summary = resultArray['octordle'] + resultArray['quordle'];
+    let summary = resultArray['octordle'] + "\r\n" + resultArray['quordle'];
     let resultsTextArera = document.createElement("textarea");
     resultsTextArera.setAttribute("id", "results");
     document.body.appendChild(resultsTextArera);
-    resultsTextArera.value = summary;
+    resultsTextArera.innerHTML = summary;
     resultsTextArera.focus();
     resultsTextArera.select();
     document.execCommand('copy');
@@ -48,72 +47,89 @@ copyButton.addEventListener("click", async () => {
 });
 
 async function handleQurdle() {
-  let qurodle = "https://www.quordle.com/#/";
+  try {
+    //Copies quordle results to clipboard
+    let quordleInnerButtonDiv = [...document.querySelectorAll('div')].filter(el => el.innerHTML === 'Copy to Clipboard');
+    let quordleCopyButton = quordleInnerButtonDiv[0].closest("button");
+    quordleCopyButton.click();
 
-  function getFormattedQuordle(fullQuordleString) {
-    return fullQuordleString.includes('quordle.com') ? fullQuordleString.split('quordle.com')[0] : qurodle;
-  };
+    //Paste cliboard results into new element so they can be read into a variable
+    let textArea = document.createElement("textarea");
+    textArea.setAttribute("id", "pasteArea");
+    document.body.appendChild(textArea);
+    textArea.focus();
+    document.execCommand('paste');
 
-  //copy quordle results to clipboard
-  let quordleInnerButtonDiv = [...document.querySelectorAll('div')].filter(el => el.innerHTML === 'Copy to Clipboard');
-  let quordleCopyButton = quordleInnerButtonDiv[0].closest("button");
-  quordleCopyButton.click();
-
-  // paste from clipboard and copy into storage
-  let textArea = document.createElement("textarea");
-  textArea.setAttribute("id", "pasteArea");
-  document.body.appendChild(textArea);
-  textArea.focus();
-  document.execCommand('paste');
-  text = document.getElementById("pasteArea").value;
-  let updatedText = getFormattedQuordle(text);
-  chrome.storage.sync.set({ quordle: updatedText }, function () {
-    textArea.remove()
-  });
+    //Save only the summary of results to storage
+    text = document.getElementById("pasteArea").value;
+    let updatedText = text.includes('quordle.com') ? text.split('quordle.com')[0] : "Quordle results not in expected format";
+    chrome.storage.sync.set({ quordle: updatedText }, function () {
+      textArea.remove()
+    });
+  } catch (e) {
+    chrome.storage.sync.set({ quordle: "Complete daily Quordle https://www.quordle.com/" }, function () {
+    });
+  }
 }
 
 async function handleDurdle() {
-  let durdle = "https://zaratustra.itch.io/dordle";
-  function getFormattedDurdle(fullDurdleString) {
-    return fullDurdleString.includes('7') ? fullDurdleString.split('7')[0] : durdle;
-  };
+  let iFrameSource = document.getElementById("game_drop").getAttribute("src")
+  let durdleIFrame = await chrome.tabs.create({ active: false, url: iFrameSource });
 
-  // document.getElementById("game_drop").contentWindow.document
-  //copy durdle results to clipboard
-  let button = document.getElementById("share");
-  // document.getElementById("game_drop")
-  button.click();
 
-  // paste from clipboard and copy into storage
-  let textArea = document.createElement("textarea");
-  textArea.setAttribute("id", "pasteArea2");
-  document.body.appendChild(textArea);
-  textArea.focus();
-  document.execCommand('paste');
-  text = document.getElementById("pasteArea2").value;
-  text = getFormattedDurdle(text);
-  chrome.storage.sync.set({ durdle: text }, function () {
-    textArea.remove()
-  });
+  function handleDurdleTwo() {
+    function getFormattedDurdle(fullDurdleString) {
+      let durdle = "https://zaratustra.itch.io/dordle";
+      return fullDurdleString.includes('7') ? fullDurdleString.split('7')[0] : durdle;
+    };
+
+    // document.getElementById("game_drop").contentWindow.document
+    //copy durdle results to clipboard
+    let button = document.getElementById("share");
+    // document.getElementById("game_drop")
+    button.click();
+
+    // paste from clipboard and copy into storage
+    let textArea = document.createElement("textarea");
+    textArea.setAttribute("id", "pasteArea2");
+    document.body.appendChild(textArea);
+    textArea.focus();
+    document.execCommand('paste');
+    text = document.getElementById("pasteArea2").value;
+    text = getFormattedDurdle(text);
+    chrome.storage.sync.set({ durdle: text }, function () {
+      textArea.remove()
+    });
+
+    chrome.scripting.executeScript({
+      target: { tabId: durdleIFrame.id },
+      function: handleDurdleTwo,
+    });
+
+  }
 }
 
 async function handleOctordle() {
-  let octordle = "https://octordle.com/?mode=daily";
-  function getFormattedOctordle(fullOctordleString) {
-    return fullOctordleString.includes('octordle.com') ? fullOctordleString.split('octordle.com')[0] : octordle;
-  };
+  try {
+    //Copies Octordle results to clipboard
+    document.getElementById("share_clipboard").click();
 
-  document.getElementById("share_clipboard").click();
-
-  // paste from clipboard and copy into storage
-  let textArea = document.createElement("textarea");
-  textArea.setAttribute("id", "pasteArea3");
-  document.body.appendChild(textArea);
-  textArea.focus();
-  document.execCommand('paste');
-  text = document.getElementById("pasteArea3").value;
-  text = getFormattedOctordle(text);
-  chrome.storage.sync.set({ octordle: text }, function () {
-    textArea.remove()
-  });
+    // paste from clipboard and copy into storage
+    let textArea = document.createElement("textarea");
+    textArea.setAttribute("id", "octordleResult");
+    document.body.appendChild(textArea);
+    textArea.focus();
+    document.execCommand('paste');
+    text = document.getElementById("octordleResult").value;
+    text = text.split('octordle.com')[0];
+    if (text[0].length < 2) {
+      throw "Puzzle results not available, is the puzzle compeleted?";
+    }
+    chrome.storage.sync.set({ octordle: text }, function () {
+      textArea.remove()
+    });
+  } catch {
+    chrome.storage.sync.set({ octordle: "Complete daily Octordle https://octordle.com" }, function () {
+    });
+  }
 }
