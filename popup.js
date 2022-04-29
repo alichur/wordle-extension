@@ -121,8 +121,9 @@ async function handleOctordle() {
     textArea.focus();
     document.execCommand('paste');
     text = document.getElementById("octordleResult").value;
+
     text = text.split('octordle.com')[0];
-    if (text[0].length < 2) {
+    if (text.length < 2) {
       throw "Puzzle results not available, is the puzzle compeleted?";
     }
     chrome.storage.sync.set({ octordle: text }, function () {
