@@ -1,7 +1,7 @@
 {
   "name": "sharedle",
   "description": "Collates results from Wordle like games",
-  "version": "0.11",
+  "version": "0.12",
   "manifest_version": 3,
   "background": {
     "service_worker": "background.js"
