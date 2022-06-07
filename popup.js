@@ -9,7 +9,7 @@ let copyButton = document.getElementById("copyButton");
 copyButton.addEventListener("click", async () => {
   let wordle = "https://www.nytimes.com/games/wordle/index.html";
   let quordle = await chrome.tabs.create({ active: false, url: "https://www.quordle.com/#/" });
-  let durdle = await chrome.tabs.create({ active: false, url: "https://zaratustra.itch.io/dordle" });
+  // let durdle = await chrome.tabs.create({ active: false, url: "https://zaratustra.itch.io/dordle" });
   let octordle = await chrome.tabs.create({ active: false, url: "https://octordle.com/?mode=daily" });
 
   // wait for page to load. Can't look for share button we can't tell between dialog not loading due to time, or due to puzzle being incomplete.
@@ -31,7 +31,8 @@ copyButton.addEventListener("click", async () => {
 
   await new Promise(resolve => setTimeout(resolve, 1000));
 
-  chrome.storage.sync.get(['quordle', 'octordle'], function (resultArray) {
+  chrome.storage.sync.get(['quordle', 'octordle', 'errors'], function (resultArray) {
+    // let summary = resultArray['octordle'] + "\r\n" + resultArray['quordle'] + "\r\n" + resultArray['errors'];
     let summary = resultArray['octordle'] + "\r\n" + resultArray['quordle'];
     let resultsTextArera = document.createElement("textarea");
     resultsTextArera.setAttribute("id", "results");
@@ -41,8 +42,12 @@ copyButton.addEventListener("click", async () => {
     resultsTextArera.select();
     document.execCommand('copy');
 
-    chrome.tabs.remove([octordle.id, quordle.id, durdle.id]);
-    window.close();
+
+    chrome.tabs.remove([octordle.id, quordle.id]);
+    document.body.removeChild(resultsTextArera);
+    setTimeout(() => {
+      window.close();
+    }, "1000")
   });
 });
 
@@ -67,7 +72,7 @@ async function handleQurdle() {
       textArea.remove()
     });
   } catch (e) {
-    chrome.storage.sync.set({ quordle: "Complete daily Quordle https://www.quordle.com/" }, function () {
+    chrome.storage.sync.set({ errors: e, quordle: "Complete daily Quordle https://www.quordle.com/" }, function () {
     });
   }
 }
@@ -110,8 +115,16 @@ async function handleDurdle() {
 }
 
 async function handleOctordle() {
+
   try {
-    //Copies Octordle results to clipboard
+
+    //Copies Octordle results to clipboard if the results section is visible.
+    let resultsSection = document.getElementById("post_game");
+
+    if (window.getComputedStyle(resultsSection).display === "none") {
+      throw "Puzzle is not completed - results section is hidden."
+    }
+
     document.getElementById("share_clipboard").click();
 
     // paste from clipboard and copy into storage
@@ -129,8 +142,8 @@ async function handleOctordle() {
     chrome.storage.sync.set({ octordle: text }, function () {
       textArea.remove()
     });
-  } catch {
-    chrome.storage.sync.set({ octordle: "Complete daily Octordle https://octordle.com" }, function () {
+  } catch (e) {
+    chrome.storage.sync.set({ errors: e, octordle: "Complete daily Octordle https://octordle.com" }, function () {
     });
   }
 }
